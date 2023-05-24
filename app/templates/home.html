@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<header class="py-5 bg-image-full" style="background-image: url('/static/assets/energia-solar-background.png');max-height: 700px;">
+    <div class="text-center my-5">
+        <img class="img-fluid rounded-circle mb-4" src="{{ url_for('static', filename='assets/energia-solar.png') }}" alt="Olympics logo" style="max-height: 220px;" />
+        <h1 class="text-dark fs-3 fw-bolder">CONTROL DE ENERGÍA DEL HOGAR</h1>
+        <p class="text-dark-50 mb-0">Proyecto IoT</p>
+    </div>
+</header>
+<!-- Content section-->
+<section class="py-5">
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <h3>Control de consumo de energia del hogar y energia producida por placas solares</h3>
+                <p class="mb-0">Proyecto desarrollado para la asignatura de Industrialización y Despliegue de Sistemas IoT, que controla el consumo de energia de la red de un hogar y la cantidad de energia generada por las placas solares de dicho hogar. La energia se controla con un sensor Shelly, que mediante la Raspberry PI se conecta a una base de datos BigQuery en la nube de Google, y esos datos se muestran en una aplicación web de Flask desplegada en la nube de Google.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
