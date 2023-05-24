@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Ultimos datos{% endblock %}
+
+{% block content %}
+    <div class="container my-5">
+        <h1>Ultimos datos</h1>
+        <p>Listado de los últimos datos recibidos</p>
+        <div class="row text-center">
+            <div class="col-10 m-auto">
+                <form method="GET" action="/datos" class="mb-4">
+                    <div class="form-row d-flex">
+                        <div class="col-md-3 mx-1">
+                            <label for="filter_datetime_start" class="fw-bold">Inicio:</label>
+                            <input type="datetime-local" id="filter_datetime_start" name="filter_datetime_start" class="form-control" value="{{ request.args.get('filter_datetime_start') }}">
+                        </div>
+                        <div class="col-md-3 mx-1">
+                            <label for="filter_datetime_end" class="fw-bold">Fin:</label>
+                            <input type="datetime-local" id="filter_datetime_end" name="filter_datetime_end" class="form-control" value="{{ request.args.get('filter_datetime_end') }}">
+                        </div>
+                        <div class="col-md-2 mx-1">
+                            <label for="order_by_field" class="fw-bold">Ordenar por:</label>
+                            <select id="order_by_field" name="order_by_field" class="form-control">
+                              <option value="datetime" {% if request.args.get('order_by_field') == 'datetime' %}selected{% endif %}>Fecha y Hora</option>
+                              <option value="energia_generada_placas" {% if request.args.get('order_by_field') == 'energia_generada_placas' %}selected{% endif %}>Energia Generada</option>
+                              <option value="energia_consumida_red" {% if request.args.get('order_by_field') == 'energia_consumida_red' %}selected{% endif %}>Energia Consumida</option>
+                              <option value="voltaje" {% if request.args.get('order_by_field') == 'voltaje' %}selected{% endif %}>Voltaje</option>
+                          </select>
+                        </div>
+                        <div class="col-md-2 mx-1">
+                            <label for="order_by_direction" class="fw-bold">Dirección:</label>
+                            <select id="order_by_direction" name="order_by_direction" class="form-control">
+                              <option value="asc" {% if request.args.get('order_by_direction') == 'asc' %}selected{% endif %}>Ascendente</option>
+                              <option value="desc" {% if request.args.get('order_by_direction') == 'desc' %}selected{% endif %}>Descendente</option>
+                          </select>
+                        </div>
+                        <div class="col-md-2 mx-1">
+                            <button type="submit" class="btn btn-primary mt-4">🔍 Aplicar</button>
+                        </div>
+                    </div>
+                </form>
+                <table class="table table-striped m-auto">
+                    <thead class="table-dark">
+                      <tr>
+                        <th scope="col">Time</th>
+                        <th scope="col">Energia Generada por Placas</th>
+                        <th scope="col">Energia Consumida por la Red</th>
+                        <th scope="col">Voltaje</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for r in results %}
+                      <tr>
+                        <th>{{r.datetime}}</th>
+                        <td>{{r.energia_generada_placas}}</td>
+                        <td>{{r.energia_consumida_red}}</td>
+                        <td>{{r.voltaje}}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>    
+{% endblock %}
