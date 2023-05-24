@@ -42,9 +42,13 @@ def datos():
         """
     else:
         # Ordenar por datetime de forma descendente por defecto si no se especifica ninguna ordenación
-        squery += 'ORDER BY datetime DESC'
+        squery += """
+            ORDER BY datetime DESC
+        """
 
-    squery += 'LIMIT 10'
+    squery += """
+        LIMIT 10
+    """
 
     query = (squery)
     query_result = bigquery_client.query(query)
