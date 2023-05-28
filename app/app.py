@@ -1,6 +1,5 @@
-import sys
 import requests
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from google.cloud import bigquery
 from datetime import datetime
 
@@ -79,6 +78,49 @@ def configuracion():
             # Mostrar un mensaje de error en caso de que la solicitud falle
             error_message = "Error: No se pudo completar la solicitud"
             return render_template('configuracion.html', error_message=error_message)
+
+@app.route('/relay', methods=['GET', 'POST'])
+def relay():
+    url = 'http://raspfran.asuscomm.com:5000/relay'
+    if request.method == 'GET':
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            data = response.json()
+            # Extraer la información necesaria de la respuesta
+            ison = data['ison']
+            status = 'off'
+            if ison:
+                status = 'on'
+            timer_duration = data['timer_duration']
+            timer_remaining = data['timer_remaining']
+            
+            # Pass the extracted data to the template for rendering
+            return render_template('relay.html', status=status, timer_duration=timer_duration, timer_remaining=timer_remaining)
+
+    else:
+        posturl = url
+        status = request.form['status']
+        minutes = int(request.form['minutes'])
+        seconds = int(request.form['seconds'])
+        total_seconds = (minutes * 60) + seconds
+
+        if total_seconds != 0:
+            if status == 'on':
+                posturl = posturl + '?turn=on&timer=' + str(total_seconds)
+            else:
+                posturl = posturl + '?turn=off&timer=' + str(total_seconds)
+        else:
+            if status == 'on':
+                posturl = posturl + '?turn=off'
+            else:
+                posturl = posturl + '?turn=on'
+        
+        print(posturl)
+
+        response = requests.get(posturl)
+
+        return redirect('/relay')
 
 @app.route('/datos')
 def datos():

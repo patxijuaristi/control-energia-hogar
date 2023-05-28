@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}Relay{% endblock %}
+
+{% block styles %}
+<style>
+    .valores i{
+        font-size: 50px;
+    }
+    .valores .pvalor{
+        font-size: 30px;
+        font-weight: 900;
+        margin-top: 10px;
+    }
+    .val-on i{
+        color: #007e0a;
+    }
+    .val-off i{
+        color: #7e0000;
+    }
+    .valores .val {
+        padding: 15% 0 10% 0;
+        margin: 0 10%;
+        border-radius: 50%;
+    }
+    .valores .val-off {
+        border: 4px solid #7e0000;
+        background-color: #b0000017;
+    }
+    .valores .val-on {
+        border: 4px solid #007e0a;
+        background-color: #00b00e17;
+    }
+    .pexpl{
+        margin: 10% 15% 0 15%;
+        font-size: 1.1rem;
+    }
+    .configrelay {
+        border: 3px solid #007e0a;
+        border-radius: 20px;
+        padding: 10% 15%;
+    }
+    .configrelay p {
+        border-bottom: 2px solid #007e0a;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="container my-5">
+        <h1 class="titulo">Relay</h1>
+
+        {% if error_message %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ error_message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
+        {% if api_response %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ api_response }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
+        <div class="row mt-2">
+            <div class="col-12 text-center mb-4">
+                <p class="fecha">{{datetime}}</p>
+            </div>
+            <div class="col-md-3 text-center valores">
+                <div class="val {% if status == 'on' %}val-on{% else %}val-off{% endif %}">
+                    <i class="fa-solid fa-power-off"></i>
+                    <p class="pvalor">{{status}}</p>
+                </div>
+                <p class="pexpl">Estado del relay</p>
+            </div>
+            <div class="col-md-3 text-center valores">
+                <div class="val {% if timer_remaining != 0 %}val-on{% else %}val-off{% endif %}">
+                    <i class="fa-regular fa-lightbulb"></i>
+                    <p class="pvalor"><span id="timer-remaining">{{timer_remaining}}</span>s / {{timer_duration}}s</p>
+                </div>
+                <p class="pexpl">Temporizador para cambio de estado</p>
+            </div>
+            <div class="col-md-2"></div>
+            <div class="col-md-4">
+                <div class="configrelay">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-12 text-center mb-3"><p class="fw-bold">Cambiar estado del temporizador</p></div>
+                            <div class="col-12 fst-italic text-center mb-3" style="font-size: 0.85rem;">El temporizador es opcional</div>
+                            <div class="form-group col-md-6 text-center">
+                                <label for="db_update_interval">Minutos</label>
+                                <input type="number" name="minutes" id="minutes" class="form-control" value="0">
+                            </div>
+                            <div class="form-group col-md-6 text-center">
+                                <label for="shelly_fetch_interval">Segundos</label>
+                                <input type="number" name="seconds" id="seconds" class="form-control" value="0">
+                            </div>
+                        </div>
+                        <input type="hidden" name="status" value="{{status}}">
+                        <div class="row text-center mt-5">
+                            {% if status == 'on' %}
+                            <button type="submit" class="btn btn-danger w-auto px-4 text-center m-auto"><i class="fa-solid fa-power-off"></i> Apagar</button>
+                            {% else %}
+                            <button type="submit" class="btn btn-success w-auto px-4 text-center m-auto"><i class="fa-solid fa-power-off"></i> Encender</button>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
+
+{% block scripts %}
+{% if timer_remaining != 0 %}
+<script>
+    // Obtener el elemento HTML donde se mostrará el temporizador
+    var timerElement = document.getElementById('timer-remaining');
+
+    // Obtener el valor inicial del temporizador desde el servidor
+    var initialTime = {{ timer_remaining }};
+
+    // Iniciar el temporizador
+    var countdown = initialTime;
+    timerElement.innerText = countdown;
+
+    // Función para actualizar el temporizador cada segundo
+    function updateTimer() {
+        countdown -= 1;
+        timerElement.innerText = countdown;
+
+        if (countdown <= 0) {
+            // Cuando el temporizador llega a cero, realizar alguna acción adicional si es necesario
+            clearInterval(timerInterval);
+            location.reload();
+        }
+    }
+
+    // Actualizar el temporizador cada segundo
+    var timerInterval = setInterval(updateTimer, 1000);
+</script>
+{% endif %}
+{% endblock %}

@@ -2,7 +2,15 @@
 
 {% block title %}Confugración{% endblock %}
 
-{% block styles %}{% endblock %}
+{% block styles %}
+<style>
+    .title-block{
+        border-bottom: 2px solid #007e0a;
+        text-align: center;
+        font-weight: 800;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
     <div class="container my-5">
@@ -21,11 +29,13 @@
             </div>
         {% endif %}
         <div class="row d-flex justify-content-center mt-5">
-            <div class="col-md-5  align-self-center">
+            <div class="col-md-5 me-md-5">
+                <p class="title-block mb-3">Configuración actual</p>
                 <p><b>Intervalo de actualización de la base de datos:</b> {{db_update_interval}}ms</p>
                 <p><b>Intervalo de búsqueda en Shelly:</b> {{shelly_fetch_interval}}s</p>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-5 ms-md-5">
+                <p class="title-block mb-3">Modificar configuración</p>
                 <form method="post">
                     <div class="form-group">
                         <label for="db_update_interval">Intervalo de actualización de la base de datos:</label>
@@ -50,7 +60,7 @@
                         </div>
                     </div>
                     <div class="row text-center mt-4">
-                        <button type="submit" class="btn btn-primary w-auto px-4 text-center m-auto">Cambiar</button>
+                        <button type="submit" class="btn btn-primary w-auto px-4 text-center m-auto"><i class="fa fa-gears"></i> Cambiar</button>
                     </div>
                 </form>
             </div>
