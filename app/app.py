@@ -15,23 +15,70 @@ def home():
 
 @app.route('/estado')
 def estado():
-    url = "http://raspfran.asuscomm.com:5000/status"
+    url = 'http://raspfran.asuscomm.com:5000/status'
     response = requests.get(url)
     
     if response.status_code == 200:
         data = response.json()
         # Extraer la información necesaria de la respuesta
-        datetime_obj = datetime.strptime(data["datetime"], "%a, %d %b %Y %H:%M:%S %Z")
-        formatted_datetime = datetime_obj.strftime("%d-%m-%Y %H:%M:%S")
-        energia_consumida_red = data["energia_consumida_red"]
-        energia_generada_placas = data["energia_generada_placas"]
-        voltaje = data["voltaje"]
+        datetime_obj = datetime.strptime(data['datetime'], '%a, %d %b %Y %H:%M:%S %Z')
+        formatted_datetime = datetime_obj.strftime('%d-%m-%Y %H:%M:%S')
+        energia_consumida_red = data['energia_consumida_red']
+        energia_generada_placas = data['energia_generada_placas']
+        voltaje = data['voltaje']
         
         # Pass the extracted data to the template for rendering
         return render_template('estado.html', datetime=formatted_datetime, energia_consumida_red=energia_consumida_red, energia_generada_placas=energia_generada_placas, voltaje=voltaje)
     else:
         # Cuando el API falle, no mostrará datos
         return render_template('estado.html')
+
+@app.route('/configuracion', methods=['GET', 'POST'])
+def configuracion():
+    url = 'http://raspfran.asuscomm.com:5000/configure'
+
+    if request.method == 'GET':   
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            data = response.json()
+            # Extraer la información necesaria de la respuesta
+            db_update_interval = data['db_update_interval']
+            shelly_fetch_interval = data['shelly_fetch_interval']
+            
+            # Pass the extracted data to the template for rendering
+            return render_template('configuracion.html', db_update_interval=db_update_interval, shelly_fetch_interval=shelly_fetch_interval)
+        else:
+            # Cuando el API falle, no mostrará datos
+            return render_template('configuracion.html', error_message='No se ha podido obtener la información sobre la configuración actual')
+    else:
+        # Obtener los valores ingresados por el usuario en el formulario
+        db_update_interval = int(request.form['db_update_interval'])
+        shelly_fetch_interval = int(request.form['shelly_fetch_interval'])
+
+        # Construir el cuerpo de la solicitud
+        data = {
+            "db_update_interval": db_update_interval,
+            "shelly_fetch_interval": shelly_fetch_interval
+        }
+
+        # Realizar la solicitud POST a la API
+        response = requests.post(url, json=data)
+
+        if response.status_code == 200:
+            # Obtener la respuesta de la API en formato JSON
+            api_response = response.json()
+
+            if api_response['db_update_interval'] != 'Ok' or api_response['shelly_fetch_interval'] != 'Ok':
+                error_message = "Error: No se pudo completar la solicitud"
+                return render_template('configuracion.html', error_message=error_message)
+
+            # Pasar los datos a la plantilla para renderizarlos
+            return render_template('configuracion.html', api_response='Cambios realizados con éxito', db_update_interval=db_update_interval, shelly_fetch_interval=shelly_fetch_interval)
+        else:
+            # Mostrar un mensaje de error en caso de que la solicitud falle
+            error_message = "Error: No se pudo completar la solicitud"
+            return render_template('configuracion.html', error_message=error_message)
 
 @app.route('/datos')
 def datos():

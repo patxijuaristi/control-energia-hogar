@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Confugración{% endblock %}
+
+{% block styles %}{% endblock %}
+
+{% block content %}
+    <div class="container my-5">
+        <h1 class="titulo">Configuración</h1>
+
+        {% if error_message %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ error_message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
+        {% if api_response %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ api_response }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
+        <div class="row d-flex justify-content-center mt-5">
+            <div class="col-md-5  align-self-center">
+                <p><b>Intervalo de actualización de la base de datos:</b> {{db_update_interval}}ms</p>
+                <p><b>Intervalo de búsqueda en Shelly:</b> {{shelly_fetch_interval}}s</p>
+            </div>
+            <div class="col-md-5">
+                <form method="post">
+                    <div class="form-group">
+                        <label for="db_update_interval">Intervalo de actualización de la base de datos:</label>
+                        <div class="d-flex">
+                            <input type="range" class="form-range" id="db_update_interval" name="db_update_interval" min="200" max="1000" step="50" value="{{db_update_interval}}" required>
+                            <span id="db_update_interval_value" class="ms-4 fw-bold">
+                                {% if db_update_interval %}
+                                {{db_update_interval}}ms
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="shelly_fetch_interval">Intervalo de búsqueda en Shelly:</label>
+                        <div class="d-flex">
+                            <input type="range" class="form-range" id="shelly_fetch_interval" name="shelly_fetch_interval" min="5" max="20" step="1" value="{{shelly_fetch_interval}}" required>
+                            <span id="shelly_fetch_interval_value" class="ms-5 fw-bold">
+                                {% if shelly_fetch_interval %}
+                                {{shelly_fetch_interval}}s
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row text-center mt-4">
+                        <button type="submit" class="btn btn-primary w-auto px-4 text-center m-auto">Cambiar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Capturar los elementos de rango y los elementos de valor
+    const dbUpdateIntervalRange = document.getElementById('db_update_interval');
+    const shellyFetchIntervalRange = document.getElementById('shelly_fetch_interval');
+    const dbUpdateIntervalValue = document.getElementById('db_update_interval_value');
+    const shellyFetchIntervalValue = document.getElementById('shelly_fetch_interval_value');
+
+    // Actualizar los elementos de valor cuando cambie el rango
+    dbUpdateIntervalRange.addEventListener('input', function() {
+        dbUpdateIntervalValue.textContent = dbUpdateIntervalRange.value + 'ms';
+    });
+
+    shellyFetchIntervalRange.addEventListener('input', function() {
+        shellyFetchIntervalValue.textContent = shellyFetchIntervalRange.value + 's';
+    });
+</script>
+{% endblock %}
