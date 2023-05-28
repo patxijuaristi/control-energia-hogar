@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Control{% endblock %}
+
+{% block styles %}
+<style>
+    .valores i{
+        font-size: 50px;
+    }
+    .valores .pvalor{
+        font-size: 30px;
+        font-weight: 900;
+        margin-top: 10px;
+    }
+    .valores i{
+        color: #007e0a;
+    }
+    .valores .val {
+        border: 4px solid #007e0a;
+        background-color: #00b00e17;
+        padding: 15% 0 10% 0;
+        margin: 0 10%;
+        border-radius: 50%;
+    }
+    .fecha{
+        font-style: italic;
+        color: #007e0a;
+        font-size: 25px;
+        font-weight: 600;
+    }
+    .pexpl{
+        margin: 10% 15% 0 15%;
+        font-size: 1.1rem;
+        color: #007e0a;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="container my-5">
+        <h1 class="titulo">Última Actualización</h1>
+
+        <div class="row d-flex justify-content-center">
+            <div class="col-12 text-center mb-4">
+                <p class="fecha">{{datetime}}</p>
+            </div>
+            <div class="col-md-3 text-center valores">
+                <div class="val">
+                    <i class="fa fa-solar-panel"></i>
+                    <p class="pvalor">{{energia_consumida_red}}</p>
+                </div>
+                <p class="pexpl">Energia consumida por la red del hogar</p>
+            </div>
+            <div class="col-md-3 text-center valores">
+                <div class="val">
+                    <i class="fa-regular fa-lightbulb"></i>
+                    <p class="pvalor">{{energia_generada_placas}}</p>
+                </div>
+                <p class="pexpl">Energia consumida por la red del hogar</p>
+            </div>
+            <div class="col-md-3 text-center valores">
+                <div class="val">
+                    <i class="fa-solid fa-bolt"></i>
+                    <p class="pvalor">{{voltaje}}</p>
+                </div>
+                <p class="pexpl">Energia consumida por la red del hogar</p>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        setTimeout(function() {
+            location.reload();
+        }, 10000); // Reload the page every 10 seconds
+    </script>
+{% endblock %}

@@ -1,5 +1,5 @@
 import sys
-
+import requests
 from flask import Flask, render_template, request
 from google.cloud import bigquery
 from datetime import datetime
@@ -12,6 +12,26 @@ app.config['STATIC_URL_PATH'] = '/static'
 @app.route('/')
 def home():
     return render_template('home.html')
+
+@app.route('/estado')
+def estado():
+    url = "http://raspfran.asuscomm.com:5000/status"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        data = response.json()
+        # Extraer la información necesaria de la respuesta
+        datetime_obj = datetime.strptime(data["datetime"], "%a, %d %b %Y %H:%M:%S %Z")
+        formatted_datetime = datetime_obj.strftime("%d-%m-%Y %H:%M:%S")
+        energia_consumida_red = data["energia_consumida_red"]
+        energia_generada_placas = data["energia_generada_placas"]
+        voltaje = data["voltaje"]
+        
+        # Pass the extracted data to the template for rendering
+        return render_template('estado.html', datetime=formatted_datetime, energia_consumida_red=energia_consumida_red, energia_generada_placas=energia_generada_placas, voltaje=voltaje)
+    else:
+        # Cuando el API falle, no mostrará datos
+        return render_template('estado.html')
 
 @app.route('/datos')
 def datos():

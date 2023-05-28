@@ -10986,3 +10986,10 @@ footer{
   font-style: italic;
   font-size: 1.15rem;
 }
+
+.titulo{
+  font-size: 1.5em;
+  font-weight: 700;
+  border-bottom: 3px solid #007e0a;
+  margin-bottom: 1em;
+}
