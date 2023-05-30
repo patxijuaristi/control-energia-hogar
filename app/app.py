@@ -12,6 +12,10 @@ app.config['STATIC_URL_PATH'] = '/static'
 def home():
     return render_template('home.html')
 
+@app.route('/graficas')
+def graficas():
+    return render_template('graficas.html')
+
 @app.route('/estado')
 def estado():
     url = 'http://raspfran.asuscomm.com:5000/status'
