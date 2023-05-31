@@ -115,4 +115,5 @@ cython_debug/
 .aws
 
 .idea
-/raspberry/clave_google.json
+clave_google.json
+comandos.txt
