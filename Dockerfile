@@ -11,9 +11,6 @@ COPY app /app
 # Instalar los paquetes necesarios especificados en requirements.txt
 RUN apt-get update -y && apt-get install -y python3-opencv
 
-# Establecer la variable de entorno para el archivo de credenciales de Google Cloud
-ENV GOOGLE_APPLICATION_CREDENTIALS=clave_google.json
-
 RUN pip install -r requirements.txt
 
 # Haz que el puerto 4000 esté disponible para el mundo fuera de este contenedor
